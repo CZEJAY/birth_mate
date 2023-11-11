@@ -6,11 +6,11 @@ export async function POST(req: NextRequest){
     try {
         const body = await req.json()
         const { postId, likesArray } = body
-        const updateLikes = await Thread.findById(postId)
-        
-        updateLikes.likes = [...likesArray]
-        updateLikes.save()
-        // console.log(updateLikes);
+         await Thread.findByIdAndUpdate(
+            postId,
+            { $set: { likes: likesArray } },
+            { new: true }
+        );
 
         return NextResponse.json({message: "Updated"}, {status: 200})
     } catch (error) {
