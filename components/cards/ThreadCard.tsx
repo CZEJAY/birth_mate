@@ -73,11 +73,11 @@ async function ThreadCard({
           </div>
 
           <div className='flex w-full flex-col'>
-            <Link href={`/profile/${author.id}`} className='flex flex-col items-center gap-2 w-fit'>
+            <Link href={`/profile/${author.id}`} className='flex flex-col sm:flex-row items-center gap-1 sm:gap-2 w-fit'>
               <h4 className='cursor-pointer text-base-semibold text-light-1'>
                 {author.name}
               </h4>
-              <span className="text-light-1">-</span> <small className="text-small-semibold line-clamp-1 truncate text-gray-500">{formatDateString(createdAt)}</small>
+              <span className="text-light-1 hidden sm:block">-</span> <small className="text-small-semibold line-clamp-1 truncate text-gray-500">{formatDateString(createdAt)}</small>
             </Link>
 
             <p className='mt-4 text-small-regular text-light-2'>{content}</p>
@@ -106,6 +106,7 @@ async function ThreadCard({
                   alt='heart'
                   width={24}
                   height={24}
+
                   className='cursor-pointer object-contain'
                 />
                 <LikeBtn post={post} userId={user._id} />
@@ -140,7 +141,7 @@ async function ThreadCard({
               alt={`user_${index}`}
               width={24}
               height={24}
-              className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
+              className={`${index !== 0 && "-ml-5"} rounded-full h-5 w-5 object-cover`}
             />
           ))}
 
