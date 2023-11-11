@@ -24,6 +24,12 @@ async function page({ params }: { params: { id: string } }) {
     <section className='relative'>
       <div>
         <ThreadCard
+          post={
+            {
+              _id: thread._id,
+              likes: thread.likes
+            }
+          }
           id={thread._id}
           currentUserId={user.id}
           parentId={thread.parentId}
@@ -46,6 +52,11 @@ async function page({ params }: { params: { id: string } }) {
       <div className='mt-10'>
         {thread.children.map((childItem: any) => (
           <ThreadCard
+            post={
+              {_id: childItem._id,
+              likes: childItem.likes,
+            }
+            }
             key={childItem._id}
             id={childItem._id}
             currentUserId={user.id}
