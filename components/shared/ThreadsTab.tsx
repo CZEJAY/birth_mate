@@ -12,6 +12,7 @@ interface Result {
   threads: {
     _id: string;
     text: string;
+    likes: string[];
     parentId: string | null;
     author: {
       name: string;
@@ -55,6 +56,12 @@ async function ThreadsTab({ currentUserId, accountId, accountType }: Props) {
     <section className='mt-9 flex flex-col gap-10'>
       {result.threads.map((thread) => (
         <ThreadCard
+          post={
+            {
+              _id: thread._id,
+              likes: thread.likes,
+            }
+          }
           key={thread._id}
           id={thread._id}
           currentUserId={currentUserId}
