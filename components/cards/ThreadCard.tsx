@@ -1,8 +1,11 @@
+
 import Image from "next/image";
 import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
 import DeleteThread from "../forms/DeleteThread";
+import LikeBtn from "../LikeBtn";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 interface Props {
   id: string;
@@ -14,6 +17,10 @@ interface Props {
     image: string;
     id: string;
   };
+  post: {
+    likes: string[],
+    _id: string
+  },
   community: {
     id: string;
     name: string;
@@ -28,7 +35,7 @@ interface Props {
   isComment?: boolean;
 }
 
-function ThreadCard({
+async function ThreadCard({
   id,
   currentUserId,
   parentId,
@@ -38,7 +45,12 @@ function ThreadCard({
   createdAt,
   comments,
   isComment,
+  post
 }: Props) {
+  // const [likesArray, setLikesArray] = useState(likes)
+  // console.log(currentUserId);
+  const user: any = await useCurrentUser()
+  
   return (
     <article
       className={`flex w-full flex-col rounded-xl ${
@@ -61,24 +73,19 @@ function ThreadCard({
           </div>
 
           <div className='flex w-full flex-col'>
-            <Link href={`/profile/${author.id}`} className='w-fit'>
+            <Link href={`/profile/${author.id}`} className='flex flex-col items-center gap-2 w-fit'>
               <h4 className='cursor-pointer text-base-semibold text-light-1'>
                 {author.name}
               </h4>
+              <span className="text-light-1">-</span> <small className="text-small-semibold line-clamp-1 truncate text-gray-500">{formatDateString(createdAt)}</small>
             </Link>
 
-            <p className='mt-2 text-small-regular text-light-2'>{content}</p>
+            <p className='mt-4 text-small-regular text-light-2'>{content}</p>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
-              <div className='flex gap-3.5'>
-                <Image
-                  src='/assets/heart-gray.svg'
-                  alt='heart'
-                  width={24}
-                  height={24}
-                  className='cursor-pointer object-contain'
-                />
-                <Link href={`/thread/${id}`}>
+              <div className='flex items-center gap-3.5'>
+              
+                <Link href={`/thread/${id}`} className="flex items-center">
                   <Image
                     src='/assets/reply.svg'
                     alt='heart'
@@ -101,6 +108,7 @@ function ThreadCard({
                   height={24}
                   className='cursor-pointer object-contain'
                 />
+                <LikeBtn post={post} userId={user._id} />
               </div>
 
               {isComment && comments.length > 0 && (

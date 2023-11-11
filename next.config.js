@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     serverActions: true,
     serverComponentsExternalPackages: ["mongoose"],
+    swcPlugins: [["next-superjson-plugin", {}]],
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
@@ -14,6 +15,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "img.clerk.com",
+      },
+      {
+        protocol: "https",  
+        hostname: "utfs.io",
       },
       {
         protocol: "https",

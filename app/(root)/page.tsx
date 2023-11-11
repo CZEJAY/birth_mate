@@ -22,6 +22,8 @@ async function Home({
     searchParams.page ? +searchParams.page : 1,
     30
   );
+  // console.log(result);
+  
 
   return (
     <>
@@ -43,6 +45,10 @@ async function Home({
                 community={post.community}
                 createdAt={post.createdAt}
                 comments={post.children}
+                post={
+                  {likes: post.likes,
+                  _id: post._id}
+                }
               />
             ))}
           </>
