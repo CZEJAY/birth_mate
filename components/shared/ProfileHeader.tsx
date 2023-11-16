@@ -1,7 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import AddFriend from "../AddFriend";
 
 interface Props {
+  initialStatus: string;
   accountId: string;
   authUserId: string;
   name: string;
@@ -19,6 +21,7 @@ function ProfileHeader({
   imgUrl,
   bio,
   type,
+  initialStatus
 }: Props) {
   return (
     <div className='flex w-full flex-col justify-start'>
@@ -55,8 +58,15 @@ function ProfileHeader({
           </Link>
         )}
       </div>
-
+          
       <p className='mt-6 max-w-lg text-base-regular text-light-2'>{bio}</p>
+      <div className="flex w-full justify-end">
+          {
+            accountId !== authUserId && (
+              <AddFriend  initialStatus={initialStatus} userId={accountId} />
+            )
+          }
+      </div>
 
       <div className='mt-12 h-0.5 w-full bg-dark-3' />
     </div>

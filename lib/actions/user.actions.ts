@@ -5,22 +5,118 @@ import { revalidatePath } from "next/cache";
 
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
-import User from "../models/user.model";
+import User, { FriendRequest } from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
+import { currentUser } from "@clerk/nextjs";
 
 
+export async function fetchFriends(userId: string) {
+  try {
+    await connectToDB()
+    const user = await currentUser()
+    if (!user) throw new Error("You are not logged in")
+    const authDbUser = await User.findOne({ id: userId }).populate({
+      path: "friend_list",
+      model: User,
+      select: "username name image id",
+  })
+  return {
+    authDbUser
+  }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function fetchRequestList(userId: string) {
+  try {
+    connectToDB();
+
+    console.log(userId)
+
+    const user = await currentUser();
+    if (!user) {
+      throw new Error("You are not logged in");
+    }
+
+    const authDbUser = await User.findOne({ id: user.id });
+    const friendDbUser = await User.findOne({ id: userId });
+
+    if (!authDbUser || !friendDbUser) {
+      throw new Error("User not found");
+    }
+
+    const friendRequestList = await User.findOne({id: userId}).populate({
+      path: "friend_requests",
+      model: FriendRequest,
+      populate: {
+        path: "sender",
+        model: User,
+        select: "username name image",
+      },
+      options: {
+        sort: {
+          createdAt: -1,
+        }},
+    })
+    // console.log(friendRequestList.friend_requests)
+    return {friendRequestList}
+  } catch (error: any) {
+    throw new Error(`Failed to fetch friend requests: ${error.message}`);
+  }
+}
 
 
+export async function fetchRequests(userId: string) {
+  try {
+    connectToDB();
+
+    const user = await currentUser();
+    if (!user) {
+      throw new Error("You are not logged in");
+    }
+
+    const authDbUser = await User.findOne({ id: user.id });
+    const friendDbUser = await User.findOne({ id: userId });
+
+    if (!authDbUser || !friendDbUser) {
+      throw new Error("User not found");
+    }
+
+    const friendRequests = await FriendRequest.find({
+      receiver: friendDbUser._id,
+      sender: authDbUser._id,
+      status: "pending",
+    });
+
+    // Extract status from each friend request in the array
+    const friendRequestStatuses = friendRequests.map((request) => request.status);
+    const friend_request = friendRequestStatuses[0];
+    console.log(friend_request);
+
+    return {
+      friend_request,
+      user,
+    };
+  } catch (error: any) {
+    throw new Error(`Failed to fetch friend requests: ${error.message}`);
+  }
+}
 
 export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    return await User.findOne({ id: userId }).populate({
+    const user = await User.findOne({ id: userId }).populate({
       path: "communities",
       model: Community,
+      populate: {
+        path: "friend_request",
+        model: FriendRequest,
+      },
     });
+    return user;
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
