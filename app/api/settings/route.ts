@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 
-import getCurrentUser from "@/app/actions/getCurrentUser";
-import prisma from "@/app/libs/prismadb";
+
+import User from "@/lib/models/user.model";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 export async function POST(
   request: Request,
 ) {
   try {
-    const currentUser = await getCurrentUser();
+    const currentUser = await useCurrentUser();
     const body = await request.json();
     const {
       name,
@@ -18,15 +19,11 @@ export async function POST(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const updatedUser = await prisma.user.update({
-      where: {
-        id: currentUser.id
-      },
-      data: {
-        image: image,
-        name: name
-      },
-    });
+    const updatedUser = await User.findOneAndUpdate(
+      {id: currentUser.id},
+      {name, image},
+      {upsert: true}
+    )
 
     return NextResponse.json(updatedUser)
   } catch (error) {
