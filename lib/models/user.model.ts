@@ -109,6 +109,8 @@ interface IMessage  {
   }
   seen: [
     {
+      id: string;
+      name: string;
       type: mongoose.Types.ObjectId;
       ref: "User";
     }
