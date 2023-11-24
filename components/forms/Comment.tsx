@@ -41,7 +41,7 @@ function Comment({ threadId, currentUserImg, currentUserId }: Props) {
       threadId,
       values.thread,
       JSON.parse(currentUserId),
-      pathname
+      pathname as string
     );
 
     form.reset();
