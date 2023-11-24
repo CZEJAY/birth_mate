@@ -195,7 +195,7 @@ export async function fetchThreadById(threadId: string) {
 
     return thread;
   } catch (err) {
-    console.error("Error while fetching thread:", err);
+    //console.error("Error while fetching thread:", err);
     throw new Error("Unable to fetch thread");
   }
 }
@@ -234,7 +234,7 @@ export async function addCommentToThread(
 
     revalidatePath(path);
   } catch (err) {
-    console.error("Error while adding comment:", err);
+    //console.error("Error while adding comment:", err);
     throw new Error("Unable to add comment");
   }
 }

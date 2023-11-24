@@ -18,7 +18,7 @@ async function Page() {
 
   const activity = await getActivity(userInfo._id);
   const { friendRequestList } = await fetchRequestList(userInfo.id);
-  // console.log(friendRequestList.friend_requests.length)
+  // //console.log(friendRequestList.friend_requests.length)
   
 
   return (

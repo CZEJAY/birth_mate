@@ -7,7 +7,22 @@ interface IUser extends mongoose.Document  {
   name: string;
   email: string;
   dob: Date;
-  conversations: mongoose.Types.ObjectId[];
+  conversations?: [
+    {
+      _id: mongoose.Types.ObjectId;
+      createdAt: Date;
+      lastMessageAt: Date;
+      name: string;
+      messages: [
+        {
+          type: mongoose.Types.ObjectId;
+          ref: "Message";
+          _id: mongoose.Types.ObjectId;
+          createdAt: Date;
+        }
+      ]
+    }
+  ];
   messages: mongoose.Types.ObjectId[];
   seen_messages: mongoose.Types.ObjectId[];
   friend_requests: mongoose.Types.ObjectId[];
@@ -17,6 +32,11 @@ interface IUser extends mongoose.Document  {
   threads: mongoose.Types.ObjectId[];
   communities: mongoose.Types.ObjectId[];
   onboarded: boolean;
+  createdAt: {
+    type: string,
+    default: string
+  }
+  lastMessageAt: Date
 }
 
 interface IFriendRequest extends mongoose.Document {
@@ -46,7 +66,7 @@ interface IConversation  {
     }
   ],
   users: [
-    {
+   id: {
       type: mongoose.Types.ObjectId;
       ref: "User";
     }
@@ -60,7 +80,6 @@ const Conversation = mongoose.models.Conversation || mongoose.model("Conversatio
   },
   name: {
     type: String,
-    required: true,
   },
   isGroup: Boolean,
   messages: [
@@ -72,7 +91,9 @@ const Conversation = mongoose.models.Conversation || mongoose.model("Conversatio
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
+      unique: false,
+      required: true,
     }
   ]
 }))
@@ -82,6 +103,10 @@ interface IMessage  {
   body?: string;
   image?: string;
   createdAt?: Date;
+  updatedAt: {
+    type: string,
+    default: Date
+  }
   seen: [
     {
       type: mongoose.Types.ObjectId;
@@ -114,6 +139,14 @@ const Message = mongoose.models.Message || mongoose.model("Message", new mongoos
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
 }))
 
@@ -149,6 +182,7 @@ const userSchema = new mongoose.Schema<IUser>({
   id: {
     type: String,
     required: true,
+    unique: true
   },
   username: {
     type: String,
@@ -216,6 +250,10 @@ const userSchema = new mongoose.Schema<IUser>({
       ref: "Community",
     },
   ],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

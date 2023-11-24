@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest) => {
         const user = await currentUser();
         const body = await req.json();
         const { requestId, status, pathname } = body;
-        console.log("Status",status)
+        //console.log("Status",status)
 
         const authDBUser = await User.findOne({ id: user?.id})
 
@@ -53,7 +53,7 @@ export const POST = async (req: NextRequest) => {
 
         return NextResponse.json({ message: "Friend request updated successfully" }, { status: 200 });
     } catch (error) {
-        console.error("An error occurred:", error);
+        //console.error("An error occurred:", error);
         return NextResponse.json({ message: "An error occurred" }, { status: 500 });
     }
 }

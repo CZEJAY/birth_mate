@@ -1,76 +1,54 @@
 import { NextResponse } from "next/server";
-
-import getCurrentUser from "@/app/actions/getCurrentUser";
-import { pusherServer } from '@/app/libs/pusher'
-import prisma from "@/app/libs/prismadb";
+import { pusherServer } from '@/lib/pusher'
+import { Conversation, Message } from "@/lib/models/user.model";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 export async function POST(
   request: Request,
 ) {
   try {
-    const currentUser = await getCurrentUser();
+    const currentUser = await useCurrentUser();
     const body = await request.json();
     const {
       message,
       image,
       conversationId
     } = body;
+    //console.log("Api route messages:", conversationId);
 
-    if (!currentUser?.id || !currentUser?.email) {
+    if (!currentUser?.id || !currentUser?.onboarded) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const newMessage = await prisma.message.create({
-      include: {
-        seen: true,
-        sender: true
-      },
-      data: {
-        body: message,
-        image: image,
-        conversation: {
-          connect: { id: conversationId }
-        },
-        sender: {
-          connect: { id: currentUser.id }
-        },
-        seen: {
-          connect: {
-            id: currentUser.id
-          }
-        },
-      }
-    });
+    
+
+    const newMessage = await Message.create({
+      body: message,
+      image: image,
+      conversationId: conversationId,
+      sender: currentUser._id,
+      seen: [currentUser._id]
+    }).then((data: any) => data.populate('seen sender'))
 
     
-    const updatedConversation = await prisma.conversation.update({
-      where: {
-        id: conversationId
+    const updatedConversation = await Conversation.findByIdAndUpdate(
+      conversationId,
+      {
+        $set: { lastMessageAt: new Date() },
+        $addToSet: { messages: newMessage.id }
       },
-      data: {
-        lastMessageAt: new Date(),
-        messages: {
-          connect: {
-            id: newMessage.id
-          }
-        }
-      },
-      include: {
-        users: true,
-        messages: {
-          include: {
-            seen: true
-          }
-        }
+      {
+        new: true,//@ts-expect-error
+        populate: ['users', { path: 'messages', populate: 'seen' }]
       }
-    });
+    ).exec();
 
     await pusherServer.trigger(conversationId, 'messages:new', newMessage);
-
-    const lastMessage = updatedConversation.messages[updatedConversation.messages.length - 1];
-
-    updatedConversation.users.map((user) => {
-      pusherServer.trigger(user.email!, 'conversation:update', {
+      //@ts-expect-error
+    const lastMessage = updatedConversation?.messages[updatedConversation?.messages?.length - 1];
+      //@ts-expect-error
+    updatedConversation?.users?.map((user: any) => {
+      pusherServer.trigger(user.id!, 'conversation:update', {
         id: conversationId,
         messages: [lastMessage]
       });
@@ -78,7 +56,7 @@ export async function POST(
 
     return NextResponse.json(newMessage)
   } catch (error) {
-    console.log(error, 'ERROR_MESSAGES')
+    //console.log(error, 'ERROR_MESSAGES')
     return new NextResponse('Error', { status: 500 });
   }
 }

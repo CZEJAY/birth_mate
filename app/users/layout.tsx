@@ -12,6 +12,8 @@ export default async function UsersLayout({
 }) {
   const user = await currentUser()
   const {users} = await fetchUsers({userId: user?.id || ""});
+  // //console.log(users);
+  
 
   return (
     <html lang="en">

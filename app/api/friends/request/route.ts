@@ -11,7 +11,7 @@ export const POST = async (req: NextRequest) => {
     try {
         const body = await req.json();
         const { userId } = body;
-        console.log(userId)
+        //console.log(userId)
         await connectToDB()
 
         if (!user) {
@@ -55,7 +55,7 @@ export const POST = async (req: NextRequest) => {
 
         return NextResponse.json({ message: "Friend request sent", friendRequestId: request._id }, { status: 200 });
     } catch (error) {
-        console.error(error);
+        //console.error(error);
         return NextResponse.json({ message: "Something went wrong" }, { status: 500 });
     }
 };

@@ -48,7 +48,7 @@ async function ThreadCard({
   post
 }: Props) {
   // const [likesArray, setLikesArray] = useState(likes)
-  // console.log(currentUserId);
+  // //console.log(currentUserId);
   const user: any = await useCurrentUser()
   
   return (

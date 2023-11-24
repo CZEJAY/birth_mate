@@ -25,7 +25,7 @@ const Select: React.FC<SelectProps> = ({
           text-sm 
           font-medium 
           leading-6 
-          text-gray-900
+          text-light-1
         "
       >
         {label}
@@ -39,10 +39,18 @@ const Select: React.FC<SelectProps> = ({
         options={options}
         menuPortalTarget={document.body}
         styles={{
-          menuPortal: (base) => ({ ...base, zIndex: 9999 })
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+          menu: (base) => ({ ...base, background: "#000000" }),
+          option: (base, state) => ({
+            ...base,
+            background: state.isSelected ? "#121417" : "#000000",
+            color: state.isSelected ? "#EFEFEF" : "#ffffff",
+          }),
+          
         }}
         classNames={{
           control: () => 'text-sm',
+
         }}
       />
       </div>

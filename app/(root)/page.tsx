@@ -22,7 +22,7 @@ async function Home({
     searchParams.page ? +searchParams.page : 1,
     30
   );
-  // console.log(result);
+  // //console.log(result);
   
 
   return (

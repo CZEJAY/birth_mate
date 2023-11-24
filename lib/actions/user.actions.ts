@@ -25,7 +25,7 @@ export async function fetchFriends(userId: string) {
     authDbUser
   }
   } catch (error) {
-    console.log(error)
+    //console.log(error)
   }
 }
 
@@ -33,7 +33,7 @@ export async function fetchRequestList(userId: string) {
   try {
     connectToDB();
 
-    console.log(userId)
+    //console.log(userId)
 
     const user = await currentUser();
     if (!user) {
@@ -60,7 +60,7 @@ export async function fetchRequestList(userId: string) {
           createdAt: -1,
         }},
     })
-    // console.log(friendRequestList.friend_requests)
+    // //console.log(friendRequestList.friend_requests)
     return {friendRequestList}
   } catch (error: any) {
     throw new Error(`Failed to fetch friend requests: ${error.message}`);
@@ -93,7 +93,7 @@ export async function fetchRequests(userId: string) {
     // Extract status from each friend request in the array
     const friendRequestStatuses = friendRequests.map((request) => request.status);
     const friend_request = friendRequestStatuses[0];
-    console.log(friend_request);
+    //console.log(friend_request);
 
     return {
       friend_request,
@@ -189,7 +189,7 @@ export async function fetchUserPosts(userId: string) {
     });
     return threads;
   } catch (error) {
-    console.error("Error fetching user threads:", error);
+    //console.error("Error fetching user threads:", error);
     throw error;
   }
 }
@@ -248,7 +248,7 @@ export async function fetchUsers({
 
     return { users, isNext };
   } catch (error) {
-    console.error("Error fetching users:", error);
+    //console.error("Error fetching users:", error);
     throw error;
   }
 }
@@ -277,7 +277,7 @@ export async function getActivity(userId: string) {
 
     return replies;
   } catch (error) {
-    console.error("Error fetching replies: ", error);
+    //console.error("Error fetching replies: ", error);
     throw error;
   }
 }

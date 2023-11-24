@@ -1,8 +1,9 @@
-import getCurrentUser from "@/app/actions/getCurrentUser";
+
 import { NextResponse } from "next/server";
 
-import prisma from "@/app/libs/prismadb";
-import { pusherServer } from "@/app/libs/pusher";
+import User,  { IUser, Conversation, Message } from "@/lib/models/user.model";
+import { pusherServer } from "@/lib/pusher";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 interface IParams {
   conversationId?: string;
@@ -14,42 +15,38 @@ export async function DELETE(
 ) {
   try {
     const { conversationId } = params;
-    const currentUser = await getCurrentUser();
+    const currentUser = await useCurrentUser();
 
     if (!currentUser?.id) {
       return NextResponse.json(null);
     }
 
-    const existingConversation = await prisma.conversation.findUnique({
-      where: {
-        id: conversationId
-      },
-      include: {
-        users: true
-      }
-    });
+    const existingConversation = await Conversation.findOne({
+      _id: conversationId
+    })
+    .populate('users')
+    .exec();
 
     if (!existingConversation) {
       return new NextResponse('Invalid ID', { status: 400 });
     }
 
-    const deletedConversation = await prisma.conversation.deleteMany({
-      where: {
-        id: conversationId,
-        userIds: {
-          hasSome: [currentUser.id]
-        },
-      },
+    const deletedConversation = await Conversation.deleteMany({
+      _id: conversationId,
+      userIds: currentUser.id
+    }).then(async() => {
+      await Message.deleteMany({ conversationId });
     });
 
-    existingConversation.users.forEach((user) => {
-      if (user.email) {
-        pusherServer.trigger(user.email, 'conversation:remove', existingConversation);
+    existingConversation.users.forEach((user: any) => {
+      if (user.id) {
+        pusherServer.trigger(user.id, 'conversation:remove', existingConversation);
       }
     });
 
     return NextResponse.json(deletedConversation)
   } catch (error) {
+    //console.log(error);
     return NextResponse.json(null);
   }
 }

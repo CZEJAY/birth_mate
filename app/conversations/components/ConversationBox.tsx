@@ -2,15 +2,15 @@
 
 import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Conversation, Message, User } from "@prisma/client";
+import { Conversation, Message, IUser as User } from "@/lib/models/user.model";
 import { format } from "date-fns";
-import { useSession } from "next-auth/react";
 import clsx from "clsx";
 
-import Avatar from "@/app/components/Avatar";
-import useOtherUser from "@/app/hooks/useOtherUser";
-import AvatarGroup from "@/app/components/AvatarGroup";
-import { FullConversationType } from "@/app/types";
+import useOtherUser from "@/hooks/useOtherUser";
+import AvatarGroup from "@/components/AvatarGroup";
+import { FullConversationType } from "@/types";
+import Avatar from "@/components/Avatar";
+import { useAuth } from "@clerk/nextjs";
 
 interface ConversationBoxProps {
   data: FullConversationType,
@@ -21,12 +21,14 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   data, 
   selected 
 }) => {
+  //console.log("Data", data);
+  
   const otherUser = useOtherUser(data);
-  const session = useSession();
+  const { userId } = useAuth();
   const router = useRouter();
 
   const handleClick = useCallback(() => {
-    router.push(`/conversations/${data.id}`);
+    router.push(`/conversations/${data?._id}`);
   }, [data, router]);
 
   const lastMessage = useMemo(() => {
@@ -35,8 +37,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     return messages[messages.length - 1];
   }, [data.messages]);
 
-  const userEmail = useMemo(() => session.data?.user?.email,
-  [session.data?.user?.email]);
+  const authUserId = useMemo(() => userId,
+  [userId]);
   
   const hasSeen = useMemo(() => {
     if (!lastMessage) {
@@ -45,13 +47,13 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
 
     const seenArray = lastMessage.seen || [];
 
-    if (!userEmail) {
+    if (!authUserId) {
       return false;
     }
 
     return seenArray
-      .filter((user) => user.email === userEmail).length !== 0;
-  }, [userEmail, lastMessage]);
+      .filter((user) => user.ref === authUserId).length !== 0;
+  }, [authUserId, lastMessage]);
 
   const lastMessageText = useMemo(() => {
     if (lastMessage?.image) {
@@ -75,12 +77,12 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         items-center 
         space-x-3 
         p-3 
-        hover:bg-neutral-100
+        hover:bg-primary-500/90
         rounded-lg
         transition
         cursor-pointer
         `,
-        selected ? 'bg-neutral-100' : 'bg-white'
+        selected ? 'bg-primary-500' : 'bg-gray-800'
       )}
     >
       {data.isGroup ? (
@@ -92,15 +94,14 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         <div className="focus:outline-none">
           <span className="absolute inset-0" aria-hidden="true" />
           <div className="flex justify-between items-center mb-1">
-            <p className="text-md font-medium text-gray-900">
+            <p className="text-md font-medium text-light-1">
               {data.name || otherUser.name}
             </p>
             {lastMessage?.createdAt && (
               <p 
                 className="
-                  text-xs 
-                  text-gray-400 
-                  font-light
+                  text-small-medium
+                  text-gray-200 
                 "
               >
                 {format(new Date(lastMessage.createdAt), 'p')}
@@ -111,8 +112,9 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
             className={clsx(`
               truncate 
               text-sm
+              font-semibold
               `,
-              hasSeen ? 'text-gray-500' : 'text-black font-medium'
+              hasSeen ? 'text-gray-300' : 'text-white font-medium'
             )}>
               {lastMessageText}
             </p>

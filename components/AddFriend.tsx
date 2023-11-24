@@ -15,7 +15,7 @@ const AddFriend: React.FC<FriendProp> = ({
     initialStatus,
     userId
 }) => {
-    console.log(initialStatus);
+    //console.log(initialStatus);
     const router = useRouter()
     
     const [buttonText, setButtonText] = useState("Add Friend");

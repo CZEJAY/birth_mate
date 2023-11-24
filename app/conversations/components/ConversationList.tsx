@@ -1,18 +1,18 @@
-'use client';
+"use client"
 
-import { IUser as User } from "@/lib/models/user.model"
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
 import { find, uniq } from 'lodash';
+import { useAuth } from "@clerk/nextjs";
 
 import useConversation from "@/hooks/useConversation";
 import { pusherClient } from "@/lib/pusher";
 import GroupChatModal from "@/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
 import { FullConversationType } from "@/types";
-import { currentUser } from "@clerk/nextjs";
+import { IUser as User } from "@/lib/models/user.model"
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
@@ -27,19 +27,19 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // //console.log("Items", items);
   const router = useRouter();
-  async function fnSession(){
-    const user = await currentUser()
-    return user
-  }
 
-  const session = fnSession()
+  const session = useAuth()
 
   const { conversationId, isOpen } = useConversation();
 
   const pusherKey = useMemo(() => {
-    return session.then((data) => data?.id || "")
-  }, [session.then((data) => data?.id)])
+    return session.userId
+  }, [session.userId])
+  
+  // //console.log("PusherKey", pusherKey);
+  
 
   useEffect(() => {
     if (!pusherKey) {
@@ -96,6 +96,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
         lg:pb-0
         lg:left-20 
         lg:w-80 
+        lg:bg-dark-2 
         lg:block
         overflow-y-auto 
         border-r 
@@ -103,7 +104,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       `, isOpen ? 'hidden' : 'block w-full left-0')}>
         <div className="px-5">
           <div className="flex justify-between mb-4 pt-4">
-            <div className="text-2xl font-bold text-neutral-800">
+            <div className="text-2xl font-bold text-light-1">
               Messages
             </div>
             <div 
@@ -116,8 +117,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 cursor-pointer 
                 hover:opacity-75 
                 transition
-              "
-            >
+              ">
               <MdOutlineGroupAdd size={20} />
             </div>
           </div>

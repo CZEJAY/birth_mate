@@ -9,7 +9,7 @@ import ProfileHeader from "@/components/shared/ProfileHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { fetchFriends, fetchRequests, fetchUser } from "@/lib/actions/user.actions";
-import { log } from "console";
+import { log } from "//console";
 import FriendsCard from "../components/FriendsCard";
 import { Button } from "@/components/ui/button";
 

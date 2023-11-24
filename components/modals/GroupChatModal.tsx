@@ -72,12 +72,12 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                 text-base 
                 font-semibold 
                 leading-7 
-                text-gray-900
+                text-gray-100
               "
               >
                 Create a group chat
               </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
+            <p className="mt-1 text-sm leading-6 text-gray-50">
               Create a chat with more than 2 people.
             </p>
             <div className="mt-10 flex flex-col gap-y-8">
@@ -93,7 +93,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
                 disabled={isLoading}
                 label="Members" 
                 options={users.map((user) => ({ 
-                  value: user.id, 
+                  value: user._id, 
                   label: user.name 
                 }))} 
                 onChange={(value) => setValue('members', value, { 
@@ -113,7 +113,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
           >
             Cancel
           </Button>
-          <Button disabled={isLoading} type="submit">
+          <Button className='bg-primary-500!' disabled={isLoading} type="submit">
             Create
           </Button>
         </div>
