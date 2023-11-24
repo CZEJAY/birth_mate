@@ -3,7 +3,7 @@ import Image from "next/image";
 import AddFriend from "../AddFriend";
 
 interface Props {
-  initialStatus: string;
+  initialStatus?: string;
   accountId: string;
   authUserId: string;
   name: string;

@@ -7,7 +7,7 @@ import { Loader, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface FriendProp {
-    initialStatus: string;
+    initialStatus?: string;
     userId: string;
 }
 

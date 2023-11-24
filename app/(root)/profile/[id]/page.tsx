@@ -9,7 +9,7 @@ import ProfileHeader from "@/components/shared/ProfileHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { fetchFriends, fetchRequests, fetchUser } from "@/lib/actions/user.actions";
-import { log } from "//console";
+import { log } from "console";
 import FriendsCard from "../components/FriendsCard";
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +21,7 @@ async function Page({ params }: { params: { id: string } }) {
   //@ts-ignore
   const { authDbUser } = await fetchFriends(params.id)
   const {friend_request} = await fetchRequests(params.id)
+  const data = JSON.parse(JSON.stringify(friend_request))
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   
@@ -29,7 +30,7 @@ async function Page({ params }: { params: { id: string } }) {
   return (
     <section>
       <ProfileHeader
-        initialStatus={friend_request}
+        initialStatus={data}
         accountId={userInfo.id}
         authUserId={user.id}
         name={userInfo.name}
