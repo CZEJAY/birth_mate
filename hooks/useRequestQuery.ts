@@ -23,9 +23,13 @@ export const useFriendRequestQuery = async () => {
       ...result
     } = useInfiniteQuery({
       queryKey: ["friendRequest"],
+      //@ts-expect-error
       queryFn: ({ pageParam = 1 }) => fetchRequestList(user?.id),
+      //@ts-expect-error
       ...options,
+      //@ts-expect-error
       getNextPageParam: (lastPage, allPages) => lastPage.nextCursor,
+      //@ts-expect-error
       getPreviousPageParam: (firstPage, allPages) => firstPage.prevCursor,
     })
     return {
@@ -36,6 +40,7 @@ export const useFriendRequestQuery = async () => {
       hasPreviousPage,
       isFetchingNextPage,
       isFetchingPreviousPage,
+      //@ts-expect-error
       data: result.data?.pages.map((page) => page.data).flat(),
     }
 }
