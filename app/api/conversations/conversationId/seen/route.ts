@@ -4,19 +4,14 @@ import { pusherServer } from '@/lib/pusher'
 import { Conversation, Message } from "@/lib/models/user.model";
 import useCurrentUser from "@/hooks/useCurrentUser";
 
-interface IParams {
-  conversationId?: string;
-}
 
 export async function POST(
   request: Request,
-  { params }: { params: IParams }
 ) {
   try {
     const currentUser = await useCurrentUser();
-    const {
-      conversationId
-    } = params;
+    const body = await request.json();
+    const { conversationId } = body;  
 
     
     if (!currentUser?.id || !currentUser?.onboarded) {

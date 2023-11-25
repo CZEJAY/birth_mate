@@ -1,9 +1,15 @@
+import getMessages from "@/lib/actions/getMessages";
 import { OrganizationSwitcher, SignedIn, SignOutButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { MessageSquareIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-function Topbar() {
+async function Topbar() {
+  const status = await getMessages( null, true)
+  console.log(status);
+  
+  
   return (
     <nav className='topbar'>
       <Link href='/' className='flex items-center gap-4'>
@@ -12,6 +18,10 @@ function Topbar() {
       </Link>
 
       <div className='flex items-center gap-1'>
+        <div className='block relative'>
+          <MessageSquareIcon className="text-light-1"/>
+          <span className='absolute -top-1 -right-1 rounded-full bg-primary-500  h-3 w-3 text-xs text-light-1'></span>
+        </div>
         <div className='block md:hidden'>
           <SignedIn>
             <SignOutButton>
@@ -26,6 +36,7 @@ function Topbar() {
             </SignOutButton>
           </SignedIn>
         </div>
+
 
         <OrganizationSwitcher
           appearance={{

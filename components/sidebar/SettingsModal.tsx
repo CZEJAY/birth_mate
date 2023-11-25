@@ -39,7 +39,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   } = useForm<FieldValues>({
     defaultValues: {
+      //@ts-ignore
       name: currentUser?.name,
+      //@ts-ignore
       image: currentUser?.image
     }
   });

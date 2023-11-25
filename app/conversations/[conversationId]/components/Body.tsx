@@ -22,7 +22,9 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
   const { conversationId } = useConversation();
 
   useEffect(() => {
-    axios.post(`/api/conversations/${conversationId}/seen`);
+    axios.post(`/api/conversations/conversationId/seen`, {
+      conversationId: conversationId,
+    });
   }, [conversationId]);
 
   useEffect(() => {
@@ -30,7 +32,9 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
     bottomRef?.current?.scrollIntoView();
 
     const messageHandler = (message: FullMessageType) => {
-      axios.post(`/api/conversations/${conversationId}/seen`);
+      axios.post(`/api/conversations/conversationId/seen`,{
+        conversationId: conversationId,
+      });
 
       setMessages((current) => {
         if (find(current, { id: message._id })) {
