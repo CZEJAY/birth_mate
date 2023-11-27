@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import User,  { IUser, Conversation, Message } from "@/lib/models/user.model";
 import { pusherServer } from "@/lib/pusher";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { connectToDB } from "@/lib/mongoose";
 
 interface IParams {
   conversationId?: string;
@@ -14,6 +15,7 @@ export async function DELETE(
   { params }: { params: IParams }
 ) {
   try {
+    await connectToDB()
     const body = await request.json()
     const { conversationId } = body;
     const currentUser = await useCurrentUser();

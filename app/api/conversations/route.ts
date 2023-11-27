@@ -6,11 +6,13 @@ import User, { Conversation, Message } from "@/lib/models/user.model"
 // import prisma from "@/app/libs/prismadb";
 
 import { pusherServer } from "@/lib/pusher";
+import { connectToDB } from "@/lib/mongoose";
 
 export async function POST(
   request: Request,
 ) {
   try {
+    await connectToDB()
     const currentUser = await useCurrentUser();
     const body = await request.json();
     const {

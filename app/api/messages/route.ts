@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import { pusherServer } from '@/lib/pusher'
 import { Conversation, Message } from "@/lib/models/user.model";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { connectToDB } from "@/lib/mongoose";
 
 export async function POST(
   request: Request,
 ) {
   try {
+    await connectToDB()
     const currentUser = await useCurrentUser();
     const body = await request.json();
     const {

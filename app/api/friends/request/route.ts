@@ -9,6 +9,7 @@ export const POST = async (req: NextRequest) => {
     const user = await currentUser();
 
     try {
+        await connectToDB()
         const body = await req.json();
         const { userId } = body;
         //console.log(userId)

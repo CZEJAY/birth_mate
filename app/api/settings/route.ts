@@ -3,11 +3,13 @@ import { NextResponse } from "next/server";
 
 import User from "@/lib/models/user.model";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { connectToDB } from "@/lib/mongoose";
 
 export async function POST(
   request: Request,
 ) {
   try {
+    await connectToDB()
     const currentUser = await useCurrentUser();
     const body = await request.json();
     const {
