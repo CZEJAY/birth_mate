@@ -17,13 +17,13 @@ async function Topbar() {
         <p className='text-heading3-bold text-light-1 max-xs:hidden'>Birthmates</p>
       </Link>
 
-      <Link href="/users">
       <div className='flex items-center gap-1'>
-        <div className='block relative'>
-          <MessageSquareIcon className="text-light-1"/>
-          <span className='absolute -top-1 -right-1 rounded-full bg-primary-500  h-3 w-3 text-xs text-light-1'></span>
-        </div>
-      </Link>
+        <Link href={"/users"}>
+          <div className='block relative'>
+            <MessageSquareIcon className="text-light-1"/>
+            <span className='absolute -top-1 -right-1 rounded-full bg-primary-500  h-3 w-3 text-xs text-light-1'></span>
+          </div>
+        </Link>
         <div className='block md:hidden'>
           <SignedIn>
             <SignOutButton>
