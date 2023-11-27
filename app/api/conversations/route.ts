@@ -40,6 +40,8 @@ export async function POST(
           ...members.map((member: { value: string }) => member.value),
           currentUser._id
         ]
+      }).then((data) => {
+        return data.populate('users');
       })
 
        // Update all connections with new conversation
