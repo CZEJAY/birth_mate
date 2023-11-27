@@ -14,7 +14,8 @@ export async function DELETE(
   { params }: { params: IParams }
 ) {
   try {
-    const { conversationId } = params;
+    const body = await request.json()
+    const { conversationId } = body;
     const currentUser = await useCurrentUser();
 
     if (!currentUser?.id) {
