@@ -67,6 +67,8 @@ export async function POST(
       // If not, create a new one-on-one conversation
       const newConversation = await Conversation.create({
         users: [currentUser._id, friendId._id],
+      }).then((data) => {
+        return data.populate('users');
       });
     
       // Update all connections with the new conversation
