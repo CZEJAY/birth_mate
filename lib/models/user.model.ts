@@ -66,7 +66,7 @@ interface IConversation  {
     }
   ],
   users: [
-   id: {
+    {
       type: mongoose.Types.ObjectId;
       ref: "User";
     }
