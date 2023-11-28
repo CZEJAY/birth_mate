@@ -13,6 +13,8 @@ import GroupChatModal from "@/components/modals/GroupChatModal";
 import ConversationBox from "./ConversationBox";
 import { FullConversationType } from "@/types";
 import { IUser as User } from "@/lib/models/user.model"
+import Avatar from "@/components/Avatar";
+import SettingsModal from "@/components/sidebar/SettingsModal";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
@@ -26,20 +28,36 @@ const ConversationList: React.FC<ConversationListProps> = ({
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   // //console.log("Items", items);
   const router = useRouter();
-
+  
   const session = useAuth()
+  const [currentUser, setCurrentUser] = useState(users[0]);
+
+  
 
   const { conversationId, isOpen } = useConversation();
 
   const pusherKey = useMemo(() => {
     return session.userId
   }, [session.userId])
-  
-  // //console.log("PusherKey", pusherKey);
-  
+  // @ts-ignore
+  useEffect(() => {
+    const checkCurrentUser = () => {
+      for (let i = 0; i < users.length; i++) {
+        if(users){
+          // @ts-ignore
+          if (users[i]?.conversations[i]?.id === session.userId) {
+            // @ts-ignore
+            setCurrentUser(users[i].conversations);
+            return console.log(i)
+          }
+        }
+      }
+    }
+    checkCurrentUser();
+  },[])
 
   useEffect(() => {
     if (!pusherKey) {
@@ -84,11 +102,13 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
   return (
     <>
+      <SettingsModal currentUser={currentUser} isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <GroupChatModal 
         users={users} 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
       />
+      {/* <Avatar /> */}
       <aside className={clsx(`
         fixed 
         inset-y-0 
@@ -107,11 +127,13 @@ const ConversationList: React.FC<ConversationListProps> = ({
             <div className="text-2xl font-bold text-light-1">
               Messages
             </div>
+            
             <div 
               onClick={() => setIsModalOpen(true)} 
               className="
                 rounded-full 
-                p-2 
+                h-9 w-9 mr-4
+                p-2 ml-auto
                 bg-gray-100 
                 text-gray-600 
                 cursor-pointer 
@@ -120,6 +142,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
               ">
               <MdOutlineGroupAdd size={20} />
             </div>
+              <div
+               className="block lg:hidden cursor-pointer hover:opacity-75 transition-all duration-300">
+                <Avatar 
+                  user={currentUser}
+                />
+              </div>
           </div>
           {items.map((item) => (
             <ConversationBox

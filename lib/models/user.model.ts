@@ -9,6 +9,7 @@ interface IUser extends mongoose.Document  {
   dob: Date;
   conversations?: [
     {
+      id: string;
       _id: mongoose.Types.ObjectId;
       createdAt: Date;
       lastMessageAt: Date;
