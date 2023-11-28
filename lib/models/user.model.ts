@@ -92,8 +92,6 @@ const Conversation = mongoose.models.Conversation || mongoose.model("Conversatio
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      unique: false,
-      required: true,
     }
   ]
 }))

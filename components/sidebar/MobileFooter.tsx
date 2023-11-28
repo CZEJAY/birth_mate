@@ -16,16 +16,8 @@ const MobileFooter = () => {
   return ( 
     <div 
       className="
-        fixed 
-        justify-between 
-        w-full 
-        bottom-0 
-        z-40 
-        flex 
-        items-center 
-        bg-gray-800 
-        border-t-[1px] 
-        lg:hidden
+        bottombar
+        flex lg:hidden
       "
     >
       {routes.map((route) => (

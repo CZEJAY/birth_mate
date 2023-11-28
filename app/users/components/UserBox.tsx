@@ -41,7 +41,7 @@ const UserBox: React.FC<UserBoxProps> = ({
           space-x-3 
           bg-inherit
           p-3 
-          hover:bg-neutral-100/40
+          hover:bg-primary-500
           rounded-lg
           transition
           cursor-pointer

@@ -28,18 +28,19 @@ const MobileItem: React.FC<MobileItemProps> = ({
       className={clsx(`
         group 
         flex 
-        gap-x-3 
+        gap-x-4 
         text-sm 
         leading-6 
         font-semibold 
         w-full 
         justify-center 
         p-4 
-        text-gray-500 
-        hover:text-black 
-        hover:bg-gray-100
+        text-primary-500 
+        hover:text-white
+        hover:bg-primary-500/90
+        rounded-lg
       `,
-        active && 'bg-gray-100/25 text-black',
+        active && 'bg-primary-500/80 text-white',
       )}>
       <Icon className="h-6 w-6" />
     </Link>

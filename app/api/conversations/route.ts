@@ -2,52 +2,45 @@
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { NextResponse } from "next/server";
 
-import User, { Conversation, Message } from "@/lib/models/user.model"
+import User, { Conversation, Message } from "@/lib/models/user.model";
 // import prisma from "@/app/libs/prismadb";
 
 import { pusherServer } from "@/lib/pusher";
 import { connectToDB } from "@/lib/mongoose";
 
-export async function POST(
-  request: Request,
-) {
+export async function POST(request: Request) {
   try {
-    await connectToDB()
+    await connectToDB();
     const currentUser = await useCurrentUser();
     const body = await request.json();
-    const {
-      userId,
-      isGroup,
-      members,
-      name
-    } = body;
-    const friendId = await User.findOne({ id: userId })
+    const { userId, isGroup, members, name } = body;
+    const friendId = await User.findOne({ id: userId });
     if (!currentUser?.id || !currentUser?.username) {
-      return new NextResponse('Unauthorized', { status: 400 });
+      return new NextResponse("Unauthorized", { status: 400 });
     }
 
     if (isGroup && (!members || members.length < 2 || !name)) {
-      return new NextResponse('Invalid data', { status: 400 });
+      return new NextResponse("Invalid data", { status: 400 });
     }
 
     if (isGroup) {
       //console.log("IsGroup:", members);
-      
+
       const newConversation = await Conversation.create({
         name,
         isGroup,
         users: [
           ...members.map((member: { value: string }) => member.value),
-          currentUser._id
-        ]
+          currentUser._id,
+        ],
       }).then((data) => {
-        return data.populate('users');
-      })
+        return data.populate("users");
+      });
 
-       // Update all connections with new conversation
+      // Update all connections with new conversation
       newConversation.users.forEach((user: any) => {
         if (user.id) {
-          pusherServer.trigger(user.id, 'conversation:new', newConversation);
+          pusherServer.trigger(user.id, "conversation:new", newConversation);
         }
       });
 
@@ -58,29 +51,41 @@ export async function POST(
       // For one-on-one conversations, check if a conversation with the same users exists
       const existingConversation = await Conversation.findOne({
         users: { $all: [currentUser._id, friendId._id] },
-      });
-    
-      if (existingConversation.users.length <= 2 && existingConversation.isGroup !== true && existingConversation.name) {
+      }).populate({
+        path: "users",
+      })
+
+      if (existingConversation) {
         return NextResponse.json(existingConversation);
       }
-    
+
       // If not, create a new one-on-one conversation
       const newConversation = await Conversation.create({
-        users: [currentUser._id, friendId._id],
+        users: [
+          currentUser._id,
+          friendId._id,
+        ]
       }).then((data) => {
-        return data.populate('users');
+        if (!data) {
+          throw new Error("Failed to create conversation");
+        }
+        return data.populate("users");
       });
-    
+
+      if (!newConversation) {
+        throw new Error("Failed to populate users in conversation");
+      }
+      console.log("New Conversation:", newConversation);
       // Update all connections with the new conversation
       newConversation.users.forEach((user: any) => {
         if (user.id) {
-          pusherServer.trigger(user.id, 'conversation:new', newConversation);
+          pusherServer.trigger(user.id, "conversation:new", newConversation);
         }
-        return NextResponse.json(newConversation);
       });
+      return NextResponse.json(newConversation);
     }
   } catch (error) {
     console.log("Conver Error", error);
-    return new NextResponse('Internal Error', { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }

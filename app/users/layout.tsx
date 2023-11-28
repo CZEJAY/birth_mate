@@ -17,7 +17,7 @@ export default async function UsersLayout({
 
   return (
     <html lang="en">
-      <body className="bg-neutral-900" >
+      <body className="bg-dark-1" >
         <Sidebar>
           <div className="h-full ">
             <UserList items={users} />
