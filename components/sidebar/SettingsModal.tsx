@@ -76,12 +76,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 text-base 
                 font-semibold 
                 leading-7 
-                text-gray-900
+                text-gray-50
               "
             >
               Profile
             </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
+            <p className="mt-1 text-sm leading-6 text-gray-50">
               Edit your public information.
             </p>
 
@@ -102,7 +102,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     text-sm 
                     font-medium 
                     leading-6 
-                    text-gray-900
+                    text-gray-50
                   "
                 >
                   Photo
@@ -112,7 +112,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     width="48"
                     height="48" 
                     className="rounded-full" 
-                    src={image || currentUser?.image || '/images/placeholder.jpg'}
+                    src={
+                      //@ts-ignore-error
+                      image || currentUser?.image || '/images/placeholder.jpg'
+                    }
                     alt="Avatar"
                   />
                   <CldUploadButton 
@@ -124,8 +127,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                       disabled={isLoading}
                       secondary
                       type="button"
+                      className='text-gray-50'
                     >
-                      Change
+                      <p className="text-gray-50">Change</p>
                     </Button>
                   </CldUploadButton>
                 </div>
