@@ -36,7 +36,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const [currentUser, setCurrentUser] = useState(users[0]);
 
   
-
+  console.log("Users:", users)
   const { conversationId, isOpen } = useConversation();
 
   const pusherKey = useMemo(() => {
@@ -48,11 +48,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
       for (let i = 0; i < users.length; i++) {
         if(users){
           // @ts-ignore
-          if (users[i]?.conversations[i]?.id === session.userId) {
+          if (users[i]?.id === session.userId) {
             // @ts-ignore
-            setCurrentUser(users[i].conversations);
-            return console.log(i)
+           return setCurrentUser(users[i]);
+            // return console.log(i)
           }
+          throw new Error("null userId")
         }
       }
     }
@@ -142,7 +143,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
               ">
               <MdOutlineGroupAdd size={20} />
             </div>
-              <div
+              <div 
                className="block lg:hidden cursor-pointer hover:opacity-75 transition-all duration-300">
                 <Avatar 
                   user={currentUser}

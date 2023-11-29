@@ -51,9 +51,7 @@ export async function POST(request: Request) {
       // For one-on-one conversations, check if a conversation with the same users exists
       const existingConversation = await Conversation.findOne({
         users: { $all: [currentUser._id, friendId._id] },
-      }).populate({
-        path: "users",
-      })
+      }).populate('users')
 
       if (existingConversation) {
         return NextResponse.json(existingConversation);
@@ -62,14 +60,14 @@ export async function POST(request: Request) {
       // If not, create a new one-on-one conversation
       const newConversation = await Conversation.create({
         users: [
-          currentUser._id,
-          friendId._id,
+           currentUser._id,
+           friendId._id
         ]
       }).then((data) => {
         if (!data) {
           throw new Error("Failed to create conversation");
         }
-        return data.populate("users");
+        return data.populate('users');
       });
 
       if (!newConversation) {

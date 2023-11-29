@@ -1,5 +1,4 @@
 import mongoose, { Document } from "mongoose";
-import { type } from "os";
 
 interface IUser extends mongoose.Document  {
   id: string;
@@ -68,7 +67,7 @@ interface IConversation  {
   ],
   users: [
     {
-      type: mongoose.Types.ObjectId;
+      type: string;
       ref: "User";
     }
   ],
@@ -92,7 +91,7 @@ const Conversation = mongoose.models.Conversation || mongoose.model("Conversatio
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User"
     }
   ]
 }))
