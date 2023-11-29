@@ -53,7 +53,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
            return setCurrentUser(users[i]);
             // return console.log(i)
           }
-          throw new Error("null userId")
         }
       }
     }
