@@ -16,6 +16,7 @@ import { IUser as User } from "@/lib/models/user.model"
 import Avatar from "@/components/Avatar";
 import SettingsModal from "@/components/sidebar/SettingsModal";
 import axios from "axios";
+import LoadingModal from "@/components/modals/LoadingModal";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
@@ -98,6 +99,9 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
   return (
     <>
+      {isLoading && (
+        <LoadingModal />
+      )}
       <SettingsModal currentUser={currentUser} isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <GroupChatModal 
         users={users} 
@@ -146,7 +150,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 />
               </div>
           </div>
-          <div className="flex relative lg:hidden gap-3 justify-evenly mb-1 bg-gray-900 items-center py-7 px-1 rounded-lg overflow-hidden">
+          <div className="flex relative lg:hidden gap-3 justify-evenly mb-1 bg-gray-900/50 items-center py-7 px-1 rounded-lg overflow-hidden">
             {
               users.map((user) => (
                 <div 

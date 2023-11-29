@@ -21,7 +21,7 @@ export default async function ConversationLayout({
     const parsedUser = JSON.parse(JSON.stringify(fetchedUser))
     return(
         <html lang="en">
-            <body className="h-screen">
+            <body className="h-screen bg-dark-1">
                 <ClerkProvider
                     appearance={{
                         baseTheme: dark,
