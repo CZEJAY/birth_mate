@@ -4,6 +4,7 @@ import {fetchUsers} from "@/lib/actions/user.actions";
 import UserList from "./components/UserList";
 import { currentUser } from "@clerk/nextjs";
 import "../globals.css"
+import ActiveStatus from "@/components/ActiveStatus";
 
 export default async function UsersLayout({
   children
@@ -19,6 +20,7 @@ export default async function UsersLayout({
     <html lang="en">
       <body className="bg-dark-1" >
         <Sidebar>
+          <ActiveStatus />
           <div className="h-full ">
             <UserList items={users} />
             {children}

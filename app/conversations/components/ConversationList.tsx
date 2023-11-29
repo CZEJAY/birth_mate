@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
 import { find, uniq } from 'lodash';
@@ -15,49 +15,34 @@ import { FullConversationType } from "@/types";
 import { IUser as User } from "@/lib/models/user.model"
 import Avatar from "@/components/Avatar";
 import SettingsModal from "@/components/sidebar/SettingsModal";
+import axios from "axios";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
   users: User[];
+  currentUserNow: User;
   title?: string;
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({ 
   initialItems, 
-  users
+  users,
+  currentUserNow,
 }) => {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  // //console.log("Items", items);
+  const [currentUser, setCurrentUser] = useState(currentUserNow)
   const router = useRouter();
   
   const session = useAuth()
-  const [currentUser, setCurrentUser] = useState(users[0]);
 
-  
-  console.log("Users:", users)
   const { conversationId, isOpen } = useConversation();
 
   const pusherKey = useMemo(() => {
     return session.userId
   }, [session.userId])
   // @ts-ignore
-  useEffect(() => {
-    const checkCurrentUser = () => {
-      for (let i = 0; i < users.length; i++) {
-        if(users){
-          // @ts-ignore
-          if (users[i]?.id === session.userId) {
-            // @ts-ignore
-           return setCurrentUser(users[i]);
-            // return console.log(i)
-          }
-        }
-      }
-    }
-    checkCurrentUser();
-  },[])
 
   useEffect(() => {
     if (!pusherKey) {
@@ -99,6 +84,17 @@ const ConversationList: React.FC<ConversationListProps> = ({
     pusherClient.bind('conversation:new', newHandler)
     pusherClient.bind('conversation:remove', removeHandler)
   }, [pusherKey, router]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = useCallback((data: any) => {
+    setIsLoading(true);
+
+    axios.post('/api/conversations', { userId: data.id })
+    .then((data: any) => {
+      router.push(`/conversations/${data.data._id}`);
+    })
+    .finally(() => setIsLoading(false));
+  }, [router]);
 
   return (
     <>
@@ -143,11 +139,30 @@ const ConversationList: React.FC<ConversationListProps> = ({
               <MdOutlineGroupAdd size={20} />
             </div>
               <div 
+              onClick={() => setIsSettingsOpen(true)}
                className="block lg:hidden cursor-pointer hover:opacity-75 transition-all duration-300">
                 <Avatar 
                   user={currentUser}
                 />
               </div>
+          </div>
+          <div className="flex relative lg:hidden gap-3 justify-evenly mb-1 bg-gray-900 items-center py-7 px-1 rounded-lg overflow-hidden">
+            {
+              users.map((user) => (
+                <div 
+                onClick={() => handleClick(user)} 
+                key={user._id} 
+                title={user.name} 
+                
+                className="relative flex flex-col lg:hidden cursor-pointer hover:opacity-75 transition-all duration-300">
+                  <Avatar
+                  key={user._id}
+                  user={user}
+                />
+                  <p className="text-tiny-medium truncate absolute -bottom-5 text-gray-100">{user.name}</p>
+                </div>
+              ))
+            }
           </div>
           {items.map((item) => (
             <ConversationBox

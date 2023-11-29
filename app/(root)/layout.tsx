@@ -10,6 +10,7 @@ import Bottombar from "@/components/shared/Bottombar";
 import RightSidebar from "@/components/shared/RightSidebar";
 import Topbar from "@/components/shared/Topbar";
 import QueryProvider from "@/components/providers/QueryProvider";
+import ActiveStatus from "@/components/ActiveStatus";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +33,7 @@ export default function RootLayout({
       <html lang='en'>
         <body className={inter.className}>
           <Topbar />
-
+          <ActiveStatus />
           <main className='flex flex-row'>
             <LeftSidebar />
             <section className='main-container'>
