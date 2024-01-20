@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { formatDateString } from "@/lib/utils";
+import { formatDateString, multiFormatDateString } from "@/lib/utils";
 import DeleteThread from "../forms/DeleteThread";
 import LikeBtn from "../LikeBtn";
 import useCurrentUser from "@/hooks/useCurrentUser";
@@ -77,7 +77,7 @@ async function ThreadCard({
               <h4 className='cursor-pointer text-base-semibold text-light-1'>
                 {author.name}
               </h4>
-              <span className="text-light-1 hidden sm:block">-</span> <small className="text-small-semibold line-clamp-1 truncate text-gray-500">{formatDateString(createdAt)}</small>
+              <span className="text-light-1 hidden sm:block">-</span> <small className="text-small-semibold line-clamp-1 truncate text-gray-500">{multiFormatDateString(createdAt)}</small>
             </Link>
 
             <p className='mt-4 text-small-regular text-light-2'>{content}</p>
