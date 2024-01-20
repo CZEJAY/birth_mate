@@ -12,7 +12,8 @@ interface MessageInputProps {
   type?: string;
   required?: boolean;
   register: UseFormRegister<FieldValues>,
-  errors: FieldErrors
+  errors: FieldErrors,
+  value?: string
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({ 
@@ -20,11 +21,13 @@ const MessageInput: React.FC<MessageInputProps> = ({
   id, 
   type, 
   required, 
-  register, 
+  register,
+  value 
 }) => {
   return (
     <div className="relative w-full">
       <input
+        value={value}
         id={id}
         type={type}
         autoComplete={id}

@@ -150,7 +150,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 />
               </div>
           </div>
-          <div className="flex relative lg:hidden gap-3 justify-evenly mb-1 bg-gray-900/50 items-center py-7 px-1 rounded-lg overflow-hidden">
+          <div className="flex relative lg:hidden gap-3 justify-evenly mb-1 bg-gray-900/50 items-center py-7 px-1 rounded-lg overflow-x-auto">
             {
               users.map((user) => (
                 <div 

@@ -21,7 +21,6 @@ async function Page({ params }: { params: { id: string } }) {
   //@ts-ignore
   const { authDbUser } = await fetchFriends(params.id)
   const {friend_request} = await fetchRequests(params.id)
-  const data = JSON.parse(JSON.stringify(friend_request))
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   
@@ -30,7 +29,7 @@ async function Page({ params }: { params: { id: string } }) {
   return (
     <section>
       <ProfileHeader
-        initialStatus={data}
+        initialStatus={friend_request}
         accountId={userInfo.id}
         authUserId={user.id}
         name={userInfo.name}

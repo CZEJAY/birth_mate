@@ -82,7 +82,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         transition
         cursor-pointer
         `,
-        selected ? 'bg-primary-500' : 'bg-gray-800'
+        selected ? 'bg-primary-500' : 'bg-gray-900/50'
       )}
     >
       {data.isGroup ? (
@@ -114,7 +114,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
               text-sm
               font-semibold
               `,
-              hasSeen ? 'text-gray-300' : 'text-white font-medium'
+              hasSeen ? 'text-gray-300 text-tiny-medium' : 'text-white font-medium'
             )}>
               {lastMessageText}
             </p>

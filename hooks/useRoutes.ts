@@ -4,6 +4,7 @@ import { HiChat } from 'react-icons/hi';
 import { HiArrowLeftOnRectangle, HiUsers } from 'react-icons/hi2';
 import { SignOutButton } from "@clerk/nextjs"
 import useConversation from "./useConversation";
+import { redirect } from "next/navigation";
 
 const useRoutes = () => {
   const pathname = usePathname();
@@ -25,7 +26,7 @@ const useRoutes = () => {
     },
     {
       label: 'Logout', 
-      onClick: () => router.push("/"),
+      onClick: () => redirect("/"),
       href: '#',
       icon: HiArrowLeftOnRectangle, 
     }

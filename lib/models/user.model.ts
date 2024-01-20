@@ -1,6 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
-interface IUser extends mongoose.Document  {
+interface IUser extends mongoose.Document {
   id: string;
   username: string;
   name: string;
@@ -19,9 +19,9 @@ interface IUser extends mongoose.Document  {
           ref: "Message";
           _id: mongoose.Types.ObjectId;
           createdAt: Date;
-        }
-      ]
-    }
+        },
+      ];
+    },
   ];
   messages: mongoose.Types.ObjectId[];
   seen_messages: mongoose.Types.ObjectId[];
@@ -33,10 +33,10 @@ interface IUser extends mongoose.Document  {
   communities: mongoose.Types.ObjectId[];
   onboarded: boolean;
   createdAt: {
-    type: string,
-    default: string
-  }
-  lastMessageAt: Date
+    type: string;
+    default: string;
+  };
+  lastMessageAt: Date;
 }
 
 interface IFriendRequest extends mongoose.Document {
@@ -46,143 +46,162 @@ interface IFriendRequest extends mongoose.Document {
     type: String;
     default: "pending";
     enum: ["pending", "accepted", "rejected"];
-  }, 
+  };
   createdAt: {
     type: Date;
-  }
+  };
 }
 
-interface IConversation  {
+interface IConversation {
   _id?: string;
   createdAt: Date;
   lastMessageAt: Date;
   name: string;
-  isGroup?: boolean
+  isGroup?: boolean;
 
   messages: [
     {
       type: mongoose.Types.ObjectId;
       ref: "Message";
-    }
-  ],
+    },
+  ];
   users: [
     {
       type: string;
       ref: "User";
-    }
-  ],
+    },
+  ];
 }
 
-const Conversation = mongoose.models.Conversation || mongoose.model("Conversation", new mongoose.Schema<IConversation>({
-  lastMessageAt: {
-    type: Date,
-    default: Date.now,
-  },
-  name: {
-    type: String,
-  },
-  isGroup: Boolean,
-  messages: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Message"
-    }
-  ],
-  users: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }
-  ]
-}))
+const Conversation =
+  mongoose.models.Conversation ||
+  mongoose.model(
+    "Conversation",
+    new mongoose.Schema<IConversation>({
+      lastMessageAt: {
+        type: Date,
+        default: Date.now,
+      },
+      name: {
+        type: String,
+      },
+      isGroup: Boolean,
+      messages: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Message",
+        },
+      ],
+      users: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+    })
+  );
 
-interface IMessage  {
-  _id?: string,
+interface IMessage {
+  _id?: string;
   body?: string;
   image?: string;
   createdAt?: Date;
+  replyTo: {
+    type: mongoose.Schema.Types.ObjectId;
+    ref: "Message";
+  };
+
   updatedAt: {
-    type: string,
-    default: Date
-  }
+    type: string;
+    default: Date;
+  };
   seen: [
     {
       id: string;
       name: string;
       type: mongoose.Types.ObjectId;
       ref: "User";
-    }
-  ],
+    },
+  ];
   sender: {
     type: mongoose.Types.ObjectId;
     ref: "User";
-  } 
+  };
   conversationId: {
-   type: mongoose.Types.ObjectId
+    type: mongoose.Types.ObjectId;
   };
   senderId: mongoose.Types.ObjectId;
 }
 
-const Message = mongoose.models.Message || mongoose.model("Message", new mongoose.Schema<IMessage>({
-  body: String,
-  image: String,
-  seen: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }
-  ],
-  conversationId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Conversation"
-  },
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
-}))
+const Message =
+  mongoose.models.Message ||
+  mongoose.model(
+    "Message",
+    new mongoose.Schema<IMessage>({
+      body: String,
+      image: String,
+      replyTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Message",
+      },
 
-export type { 
-  IUser, 
-  IFriendRequest,
-  IConversation,
-  IMessage
-};
+      seen: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+      conversationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversation",
+      },
+      sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+      updatedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    })
+  );
 
-const FriendRequest = mongoose.models.FriendRequest || mongoose.model("FriendRequest", new mongoose.Schema<IFriendRequest>({
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  receiver: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  status: {
-    type: String,
-    default: "pending",
-    enum: ["pending", "accepted", "rejected"],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  }
-}))
+export type { IUser, IFriendRequest, IConversation, IMessage };
 
+const FriendRequest =
+  mongoose.models.FriendRequest ||
+  mongoose.model(
+    "FriendRequest",
+    new mongoose.Schema<IFriendRequest>({
+      sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      receiver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      status: {
+        type: String,
+        default: "pending",
+        enum: ["pending", "accepted", "rejected"],
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    })
+  );
 
 const userSchema = new mongoose.Schema<IUser>({
   id: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   username: {
     type: String,
@@ -202,19 +221,19 @@ const userSchema = new mongoose.Schema<IUser>({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
-    }
+    },
   ],
   messages: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
-    }
+    },
   ],
   seen_messages: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
-    }
+    },
   ],
   name: {
     type: String,
@@ -224,13 +243,13 @@ const userSchema = new mongoose.Schema<IUser>({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "FriendRequest",
-    }
+    },
   ],
   friend_list: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    }
+    },
   ],
   image: String,
   bio: String,
@@ -252,15 +271,11 @@ const userSchema = new mongoose.Schema<IUser>({
   ],
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
-export { 
-  FriendRequest,
-  Message,
-  Conversation
-};
+export { FriendRequest, Message, Conversation };
